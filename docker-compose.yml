@@ -13,6 +13,7 @@ services:
   openclaw:
     image: ghcr.io/openclaw/openclaw:latest
     environment:
+      - HOST=0.0.0.0
       - OPENAI_API_BASE=http://litellm:4000/v1
       - OPENAI_API_KEY=sk-dummy-key
     volumes:
@@ -28,7 +29,7 @@ services:
 
   caddy:
     image: caddy:latest
-    ports: ["80:80"] # On utilise le port 80 pour l'accès web direct
+    ports: ["80:80"]
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data

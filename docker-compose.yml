@@ -1,23 +1,27 @@
 services:
+  # L'interface IA (OpenClaw)
   openclaw:
     image: ghcr.io/openclaw/openclaw:latest
-    # On force l'hôte et le port directement dans le démarrage
-    command: ["--host", "0.0.0.0", "--port", "18789"]
-    ports:
-      - "80:18789"
+    network_mode: "host" # Supprime les barrières réseau
     environment:
-      - HOST=0.0.0.0
-      - PORT=18789
-      - OPENAI_API_BASE=http://litellm:4000/v1
+      - OPENAI_API_BASE=http://127.0.0.1:4000/v1
       - OPENAI_API_KEY=sk-dummy-key
     volumes:
       - ./data:/app/data
     restart: unless-stopped
 
+  # Le cerveau (LiteLLM)
   litellm:
     image: ghcr.io/berriai/litellm:main-latest
-    ports:
-      - "4000:4000"
+    network_mode: "host"
     volumes: [./config/litellm-config.yaml:/app/config.yaml]
     command: ["--config", "/app/config.yaml", "--port", "4000"]
+    restart: unless-stopped
+
+  # Le tunnel d'accès (Caddy)
+  caddy:
+    image: caddy:latest
+    network_mode: "host"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
     restart: unless-stopped

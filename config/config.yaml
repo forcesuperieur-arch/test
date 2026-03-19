@@ -1,0 +1,6 @@
+model_list:
+  - model_name: veille-produit
+    litellm_params:
+      model: openai/gpt-4o  # Tu peux changer pour kimi/moonshot-v1-8k ici
+      api_key: sk-NKlYxY9X61Dvf2hq6a9cgNXmxH3eIYTd2WG9xZOjwU34HoyG
+      api_base: https://api.moonshot.cn/v1 # Si tu utilises Kimi

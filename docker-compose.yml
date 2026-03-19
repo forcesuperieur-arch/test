@@ -16,15 +16,10 @@ services:
       - HOST=0.0.0.0
       - OPENAI_API_BASE=http://litellm:4000/v1
       - OPENAI_API_KEY=sk-dummy-key
+    # On enlève le healthcheck pour éviter le blocage 502
     volumes:
       - ./data:/app/data
       - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
-
-  n8n:
-    image: docker.n8n.io/n8nio/n8n:latest
-    volumes: [./n8n:/home/node/.n8n]
-    environment: [N8N_HOST=localhost]
     restart: unless-stopped
 
   caddy:

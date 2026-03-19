@@ -1,9 +1,11 @@
 services:
-  # L'interface de l'IA (Expert Spark)
+  # L'interface de l'IA branchée direct sur le port 80
   openclaw:
     image: ghcr.io/openclaw/openclaw:latest
     container_name: openclaw
-    network_mode: "host"
+    # On enlève network_mode: host pour mapper le port proprement
+    ports:
+      - "80:18789"
     environment:
       - OPENAI_API_BASE=http://127.0.0.1:4000/v1
       - OPENAI_API_KEY=sk-votre-cle-api-ici
@@ -11,7 +13,7 @@ services:
       - ./data:/app/data
     restart: unless-stopped
 
-  # Le traducteur pour tes clés API (Kimi / GPT-4)
+  # Le cerveau (LiteLLM) qui lui, passait bien au téléchargement
   litellm:
     image: ghcr.io/berriai/litellm:main-latest
     container_name: litellm
@@ -19,14 +21,4 @@ services:
     volumes:
       - ./config:/app/config
     command: ["--config", "/app/config/config.yaml", "--port", "4000"]
-    restart: unless-stopped
-
-  # Le vigile (Port 80) - Version GitHub pour éviter le timeout
-  caddy:
-    # On utilise cette version précise qui est publique et stable
-    image: ghcr.io/caddyserver/caddy:2.7.6-alpine
-    container_name: caddy
-    network_mode: "host"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
     restart: unless-stopped

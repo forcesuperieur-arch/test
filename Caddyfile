@@ -1,15 +1,10 @@
 :80 {
-    # Protection par mot de passe (admin / spark2026)
-    basicauth {
-        admin $2a$14$I4BvI.R6f3uP.X3r9n5m6eU9n5W2r8.8H3r8M5G4X3r2n5m6
-    }
-
-    # Accès à OpenClaw
+    # Accès libre à OpenClaw
     handle_path /ia* {
         reverse_proxy openclaw:18789
     }
 
-    # Accès à n8n
+    # Accès libre à n8n
     handle_path /auto* {
         reverse_proxy n8n:5678
     }

@@ -1,11 +1,5 @@
 :80 {
-    # Accès libre à OpenClaw
     handle_path /ia* {
         reverse_proxy openclaw:18789
-    }
-
-    # Accès libre à n8n
-    handle_path /auto* {
-        reverse_proxy n8n:5678
     }
 }

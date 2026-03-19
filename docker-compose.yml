@@ -23,8 +23,8 @@ services:
 
   # Le vigile (Port 80) - Version GitHub pour éviter le timeout
   caddy:
-    # LE BON MAGASIN : L'image officielle Caddy sur GitHub
-    image: ghcr.io/caddyserver/caddy:latest
+    # On utilise cette version précise qui est publique et stable
+    image: ghcr.io/caddyserver/caddy:2.7.6-alpine
     container_name: caddy
     network_mode: "host"
     volumes:

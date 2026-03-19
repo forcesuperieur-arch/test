@@ -8,7 +8,7 @@ services:
       - "80:18789"
     environment:
       - OPENAI_API_BASE=http://127.0.0.1:4000/v1
-      - OPENAI_API_KEY=sk-votre-cle-api-ici
+      - OPENAI_API_KEY=sk-NKlYxY9X61Dvf2hq6a9cgNXmxH3eIYTd2WG9xZOjwU34HoyG
     volumes:
       - ./data:/app/data
     restart: unless-stopped

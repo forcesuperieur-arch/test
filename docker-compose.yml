@@ -1,0 +1,38 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    volumes: [./ollama:/root/.ollama]
+    restart: unless-stopped
+
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    volumes: [./config/litellm-config.yaml:/app/config.yaml]
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    restart: unless-stopped
+
+  openclaw:
+    image: ghcr.io/openclaw/openclaw:latest
+    environment:
+      - OPENAI_API_BASE=http://litellm:4000/v1
+      - OPENAI_API_KEY=sk-dummy-key
+    volumes:
+      - ./data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    volumes: [./n8n:/home/node/.n8n]
+    environment: [N8N_HOST=localhost]
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:latest
+    ports: ["80:80"] # On utilise le port 80 pour l'accès web direct
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+    restart: unless-stopped
+
+volumes:
+  caddy_data:

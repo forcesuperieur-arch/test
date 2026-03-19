@@ -1,19 +1,18 @@
 services:
-  # L'interface de l'IA branchée direct sur le port 80
   openclaw:
     image: ghcr.io/openclaw/openclaw:latest
     container_name: openclaw
-    # On enlève network_mode: host pour mapper le port proprement
     ports:
       - "80:18789"
     environment:
       - OPENAI_API_BASE=http://127.0.0.1:4000/v1
       - OPENAI_API_KEY=sk-NKlYxY9X61Dvf2hq6a9cgNXmxH3eIYTd2WG9xZOjwU34HoyG
+      # ICI : Tu choisis ton propre code d'accès (ex: spark2026)
+      - GATEWAY_AUTH_TOKEN=spark2026
     volumes:
       - ./data:/app/data
     restart: unless-stopped
 
-  # Le cerveau (LiteLLM) qui lui, passait bien au téléchargement
   litellm:
     image: ghcr.io/berriai/litellm:main-latest
     container_name: litellm

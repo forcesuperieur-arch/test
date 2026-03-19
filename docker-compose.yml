@@ -23,7 +23,8 @@ services:
 
   # Le vigile (Port 80) - Version GitHub pour éviter le timeout
   caddy:
-    image: ghcr.io/lucaslorentz/caddy-docker-proxy:latest
+    # LE BON MAGASIN : L'image officielle Caddy sur GitHub
+    image: ghcr.io/caddyserver/caddy:latest
     container_name: caddy
     network_mode: "host"
     volumes:

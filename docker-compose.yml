@@ -1,25 +1,30 @@
 services:
+  # L'interface utilisateur de l'IA
   openclaw:
     image: ghcr.io/openclaw/openclaw:latest
+    container_name: openclaw
     network_mode: "host"
     environment:
-      - HOST=0.0.0.0
-      - PORT=18789
       - OPENAI_API_BASE=http://127.0.0.1:4000/v1
       - OPENAI_API_KEY=sk-dummy-key
     volumes:
       - ./data:/app/data
     restart: unless-stopped
 
+  # Le cerveau qui gère tes clés API (Kimi, GPT, etc.)
   litellm:
     image: ghcr.io/berriai/litellm:main-latest
+    container_name: litellm
     network_mode: "host"
-    volumes: [./config/litellm-config.yaml:/app/config.yaml]
-    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    volumes:
+      - ./config:/app/config
+    command: ["--config", "/app/config/config.yaml", "--port", "4000"]
     restart: unless-stopped
 
+  # Le gardien qui ouvre le port 80
   caddy:
     image: caddy:latest
+    container_name: caddy
     network_mode: "host"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile

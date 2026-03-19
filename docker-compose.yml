@@ -1,23 +1,28 @@
 services:
-  litellm:
-    image: ghcr.io/berriai/litellm:main-latest
-    volumes: [./config/litellm-config.yaml:/app/config.yaml]
-    command: ["--config", "/app/config.yaml", "--port", "4000"]
-    restart: unless-stopped
-
+  # L'interface IA (OpenClaw)
   openclaw:
     image: ghcr.io/openclaw/openclaw:latest
     environment:
       - HOST=0.0.0.0
+      - OPENCLAW_HOST=0.0.0.0
+      - GATEWAY_HOST=0.0.0.0
       - OPENAI_API_BASE=http://litellm:4000/v1
       - OPENAI_API_KEY=sk-dummy-key
-    # ICI : On force la désactivation du test qui bloque la porte
+    # Désactivation du test de santé pour éviter le blocage 502
     healthcheck:
       disable: true
     volumes:
       - ./data:/app/data
     restart: unless-stopped
 
+  # Le cerveau (LiteLLM)
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    volumes: [./config/litellm-config.yaml:/app/config.yaml]
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    restart: unless-stopped
+
+  # Le tunnel d'accès (Caddy)
   caddy:
     image: caddy:latest
     ports: ["80:80"]

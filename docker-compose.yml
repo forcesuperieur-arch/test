@@ -1,17 +1,17 @@
 services:
-  # L'interface utilisateur de l'IA
+  # L'interface de l'IA (Expert Spark)
   openclaw:
     image: ghcr.io/openclaw/openclaw:latest
     container_name: openclaw
     network_mode: "host"
     environment:
       - OPENAI_API_BASE=http://127.0.0.1:4000/v1
-      - OPENAI_API_KEY=sk-dummy-key
+      - OPENAI_API_KEY=sk-votre-cle-api-ici
     volumes:
       - ./data:/app/data
     restart: unless-stopped
 
-  # Le cerveau qui gère tes clés API (Kimi, GPT, etc.)
+  # Le traducteur pour tes clés API (Kimi / GPT-4)
   litellm:
     image: ghcr.io/berriai/litellm:main-latest
     container_name: litellm
@@ -21,9 +21,9 @@ services:
     command: ["--config", "/app/config/config.yaml", "--port", "4000"]
     restart: unless-stopped
 
-  # Le gardien qui ouvre le port 80
+  # Le vigile (Port 80) - Version GitHub pour éviter le timeout
   caddy:
-    image: caddy:latest
+    image: ghcr.io/lucaslorentz/caddy-docker-proxy:latest
     container_name: caddy
     network_mode: "host"
     volumes:

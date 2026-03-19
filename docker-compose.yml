@@ -1,31 +1,24 @@
 services:
-  # L'interface IA (OpenClaw)
   openclaw:
     image: ghcr.io/openclaw/openclaw:latest
+    network_mode: "host"
     environment:
-      - HOST=0.0.0.0
-      - OPENCLAW_HOST=0.0.0.0
-      - GATEWAY_HOST=0.0.0.0
-      - OPENAI_API_BASE=http://litellm:4000/v1
+      - OPENAI_API_BASE=http://127.0.0.1:4000/v1
       - OPENAI_API_KEY=sk-dummy-key
-    # Désactivation du test de santé pour éviter le blocage 502
-    healthcheck:
-      disable: true
     volumes:
       - ./data:/app/data
     restart: unless-stopped
 
-  # Le cerveau (LiteLLM)
   litellm:
     image: ghcr.io/berriai/litellm:main-latest
+    network_mode: "host"
     volumes: [./config/litellm-config.yaml:/app/config.yaml]
     command: ["--config", "/app/config.yaml", "--port", "4000"]
     restart: unless-stopped
 
-  # Le tunnel d'accès (Caddy)
   caddy:
     image: caddy:latest
-    ports: ["80:80"]
+    network_mode: "host"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
     restart: unless-stopped

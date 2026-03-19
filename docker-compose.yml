@@ -1,34 +1,26 @@
 services:
-  ollama:
-    image: ollama/ollama:latest
-    volumes: [./ollama:/root/.ollama]
-    restart: unless-stopped
-
+  # Le cerveau (LiteLLM)
   litellm:
     image: ghcr.io/berriai/litellm:main-latest
     volumes: [./config/litellm-config.yaml:/app/config.yaml]
     command: ["--config", "/app/config.yaml", "--port", "4000"]
     restart: unless-stopped
 
+  # L'interface (OpenClaw)
   openclaw:
     image: ghcr.io/openclaw/openclaw:latest
     environment:
       - HOST=0.0.0.0
       - OPENAI_API_BASE=http://litellm:4000/v1
       - OPENAI_API_KEY=sk-dummy-key
-    # On enlève le healthcheck pour éviter le blocage 502
     volumes:
       - ./data:/app/data
-      - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
 
+  # Le garde du corps (Caddy)
   caddy:
     image: caddy:latest
     ports: ["80:80"]
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
     restart: unless-stopped
-
-volumes:
-  caddy_data:
